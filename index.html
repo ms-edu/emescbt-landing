@@ -400,6 +400,21 @@ footer{background:var(--g0);padding:40px 40px 28px;color:rgba(255,255,255,.45);f
 <body>
 
 <!-- NAVBAR -->
+<!-- ══ RESELLER BANNER (hanya muncul jika ada ?ref= valid) ══ -->
+<style>
+#reseller-banner{display:none;align-items:center;justify-content:center;gap:10px;background:linear-gradient(90deg,#065f46,#047857);padding:8px 20px;font-size:12.5px;color:rgba(255,255,255,.85);position:relative;z-index:1000;flex-wrap:wrap;text-align:center}
+#reseller-banner .rb-dot{width:7px;height:7px;border-radius:50%;background:#34d399;flex-shrink:0;animation:heroPulse 2s infinite}
+#reseller-banner .rb-nama{font-weight:800;color:#fff}
+#reseller-banner .rb-sep{opacity:.4;margin:0 2px}
+</style>
+<div id="reseller-banner">
+  <span class="rb-dot"></span>
+  <span>Halaman ini dipersembahkan oleh reseller resmi Emes CBT:</span>
+  <span class="rb-nama"></span>
+  <span class="rb-sep">·</span>
+  <span>Hubungi via tombol WhatsApp di bawah</span>
+</div>
+
 <nav id="mainNav">
   <div class="nav-brand" onclick="showPage('home')">
     <img src="https://i.imgur.com/bT70O4C.png" alt="Emes CBT">
@@ -2129,6 +2144,62 @@ tr.ver-cat td{background:#f8fffe;font-size:10px;font-weight:800;text-transform:u
 
 
 <script>
+// ══════════════════════════════════════════════════════════
+// SISTEM RESELLER — ?ref=KODE_UNIK
+//
+// Kode reseller adalah string acak (bukan nama), sehingga
+// tidak bisa ditebak. Gunakan reseller-admin.html untuk
+// generate kode baru secara otomatis.
+//
+// Format entri:
+// 'KODE_UNIK': { nama, wa, label }
+// ══════════════════════════════════════════════════════════
+const RESELLERS = {
+  // ── Default (tanpa ?ref= atau kode tidak dikenal) ──────
+  _default: {
+    nama  : 'Emes EduTech',
+    wa    : '6289619760801',
+    label : 'Tim Emes CBT'
+  },
+  // Reseller: Dzakirul Husni
+  'kg768e': {
+    nama  : 'Dzakirul Husni',
+    wa    : '628781241499',
+    label : 'Pak Dzakir'
+  },
+};
+
+// ── Baca ?ref= dari URL & terapkan ke halaman ─────────────
+(function applyReseller() {
+  const params = new URLSearchParams(window.location.search);
+  const ref    = (params.get('ref') || '').toLowerCase().trim();
+  const data   = RESELLERS[ref] || RESELLERS._default;
+
+  // Simpan ke variabel global agar sendWA() bisa pakai
+  window._resellerWA    = data.wa;
+  window._resellerNama  = data.nama;
+  window._resellerLabel = data.label;
+
+  // Terapkan ke semua elemen bertag data-reseller-nama
+  document.querySelectorAll('[data-reseller-nama]').forEach(function(el) {
+    el.textContent = data.nama;
+  });
+
+  // Terapkan label di modal WA
+  document.querySelectorAll('[data-reseller-label]').forEach(function(el) {
+    el.textContent = data.label;
+  });
+
+  // Jika ada reseller aktif (bukan default), tampilkan banner
+  if (ref && RESELLERS[ref]) {
+    var banner = document.getElementById('reseller-banner');
+    if (banner) {
+      banner.querySelector('.rb-nama').textContent = data.nama;
+      banner.style.display = 'flex';
+    }
+  }
+})();
+
 // ── SPA Page Navigation ────────────────────────────────────────
 function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -2316,7 +2387,8 @@ function sendWA() {
 Mohon informasi lebih lanjut. Terima kasih!`;
 
   const encoded = encodeURIComponent(msg);
-  window.open(`https://wa.me/6289619760801?text=${encoded}`, '_blank');
+  const waNum = window._resellerWA || '6289619760801';
+  window.open(`https://wa.me/${waNum}?text=${encoded}`, '_blank');
   closeWAModal();
 }
 
@@ -2368,7 +2440,7 @@ document.addEventListener('click', function(e) {
         <div class="wa-head-icon"><i class="fa-brands fa-whatsapp"></i></div>
         <div>
           <h3>Dapatkan Aplikasi Emes CBT</h3>
-          <p>Isi data sekolah — kami balas via WhatsApp</p>
+          <p>Isi data sekolah — dibalas oleh <strong data-reseller-label>Tim Emes CBT</strong></p>
         </div>
       </div>
       <button class="wa-close" onclick="closeWAModal()">✕</button>
