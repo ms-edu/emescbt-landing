@@ -146,8 +146,8 @@ td.td-sekolah span{font-size:11.5px;color:#737373}
     <div class="login-title">Masuk ke Dashboard Admin</div>
     <div class="login-sub">Halaman ini hanya dapat diakses oleh admin yang berwenang.</div>
     <div class="login-field">
-      <label for="loginEmail">Email</label>
-      <input type="email" id="loginEmail" placeholder="admin@emesapps.com" autocomplete="email"
+      <label for="loginEmail">Username</label>
+      <input type="text" id="loginEmail" placeholder="admin" autocomplete="username"
         onkeydown="if(event.key==='Enter')document.getElementById('loginPass').focus()">
     </div>
     <div class="login-field">
@@ -264,10 +264,16 @@ td.td-sekolah span{font-size:11.5px;color:#737373}
 /* ════════════════════════════════════════════════
    KONFIGURASI
 ════════════════════════════════════════════════ */
-// Daftar email yang boleh akses admin
-const ALLOWED_EMAILS = [
-  'mr.mahfudsidik@gmail.com'
-];
+// Kredensial admin — ubah sesuai kebutuhan
+const ADMIN_CREDENTIALS = {
+  username: 'admin',
+  password: 'emescbt2026'
+};
+
+// Akun Firebase khusus internal untuk akses Firestore
+// (tidak perlu diketahui pengguna)
+const FIREBASE_INTERNAL_EMAIL    = 'mr.mahfudsidik@gmail.com';
+const FIREBASE_INTERNAL_PASSWORD = 'emescbt-internal-2024!';
 
 firebase.initializeApp({
   apiKey:            "AIzaSyAK9kA3GD-Os4eaCl7CFRnf0KMopTqdPKo",
@@ -282,30 +288,35 @@ const auth = firebase.auth();
 const db   = firebase.firestore();
 
 /* ══════════════════════════════════════════════
-   HANDLE AUTH STATE
+   INIT — cek session lokal
 ══════════════════════════════════════════════ */
-auth.onAuthStateChanged(function(user) {
+(function init() {
+  const loggedIn = sessionStorage.getItem('admin_logged_in') === '1';
   show('loadingScreen', false);
-  if (!user) {
-    show('adminScreen', false);
-    show('deniedScreen', false);
-    show('loginScreen', true);
-    return;
-  }
-  if (ALLOWED_EMAILS.includes(user.email)) {
-    document.getElementById('adminPhoto').src = user.photoURL || '';
-    document.getElementById('adminName').textContent = user.displayName || user.email;
+  if (loggedIn) {
+    // Sudah login di sesi ini — langsung masuk & auth Firebase di background
     show('loginScreen', false);
-    show('deniedScreen', false);
     show('adminScreen', true);
-    loadData();
+    document.getElementById('adminName').textContent = ADMIN_CREDENTIALS.username;
+    firebaseSignIn().then(() => loadData());
   } else {
-    document.getElementById('deniedEmail').textContent = user.email;
-    show('loginScreen', false);
-    show('adminScreen', false);
-    show('deniedScreen', true);
+    show('loginScreen', true);
   }
-});
+})();
+
+// Login Firebase di background agar Firestore bisa diakses
+async function firebaseSignIn() {
+  try {
+    if (!auth.currentUser) {
+      await auth.signInWithEmailAndPassword(
+        FIREBASE_INTERNAL_EMAIL,
+        FIREBASE_INTERNAL_PASSWORD
+      );
+    }
+  } catch(e) {
+    console.warn('Firebase bg auth:', e.message);
+  }
+}
 
 function show(id, visible) {
   const el = document.getElementById(id);
@@ -323,14 +334,14 @@ function show(id, visible) {
    SIGN IN / OUT
 ════════════════════════════════════════════════ */
 async function signInAdmin() {
-  const email = document.getElementById('loginEmail').value.trim();
-  const pass  = document.getElementById('loginPass').value;
-  const btn   = document.getElementById('loginBtn');
-  const errEl = document.getElementById('loginError');
+  const username = document.getElementById('loginEmail').value.trim();
+  const pass     = document.getElementById('loginPass').value;
+  const btn      = document.getElementById('loginBtn');
+  const errEl    = document.getElementById('loginError');
 
   errEl.style.display = 'none';
-  if (!email || !pass) {
-    errEl.textContent = 'Email dan password wajib diisi.';
+  if (!username || !pass) {
+    errEl.textContent = 'Username dan password wajib diisi.';
     errEl.style.display = 'block';
     return;
   }
@@ -338,30 +349,32 @@ async function signInAdmin() {
   btn.disabled = true;
   btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Masuk…';
 
-  try {
-    await auth.signInWithEmailAndPassword(email, pass);
-    // onAuthStateChanged otomatis menangani setelah login berhasil
-  } catch(err) {
-    const msgs = {
-      'auth/user-not-found'    : 'Email tidak ditemukan.',
-      'auth/wrong-password'    : 'Password salah.',
-      'auth/invalid-email'     : 'Format email tidak valid.',
-      'auth/invalid-credential': 'Email atau password salah.',
-      'auth/too-many-requests' : 'Terlalu banyak percobaan. Coba beberapa saat lagi.',
-    };
-    errEl.textContent = msgs[err.code] || ('Gagal masuk: ' + err.message);
+  // Cek kredensial
+  if (username !== ADMIN_CREDENTIALS.username || pass !== ADMIN_CREDENTIALS.password) {
+    errEl.textContent = 'Username atau password salah.';
     errEl.style.display = 'block';
     btn.disabled = false;
     btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Masuk';
+    return;
   }
+
+  // Simpan sesi & auth Firebase di background untuk Firestore
+  sessionStorage.setItem('admin_logged_in', '1');
+  await firebaseSignIn();
+
+  // Tampilkan dashboard
+  document.getElementById('adminName').textContent = username;
+  show('loginScreen', false);
+  show('adminScreen', true);
+  loadData();
 }
 
 async function signOutAdmin() {
-  await auth.signOut();
+  sessionStorage.removeItem('admin_logged_in');
+  await auth.signOut().catch(() => {});
   show('adminScreen', false);
   show('deniedScreen', false);
   show('loginScreen', true);
-  // Reset form
   const ep = document.getElementById('loginEmail');
   const pp = document.getElementById('loginPass');
   if (ep) ep.value = '';
