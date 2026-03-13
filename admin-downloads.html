@@ -4,29 +4,49 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin — Data Download Emes CBT</title>
+<meta name="robots" content="noindex,nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<!-- Firebase SDKs — Auth ditambahkan -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'DM Sans',sans-serif;background:#f5f5f5;color:#0a0a0a;min-height:100vh}
 
+/* ── Loading screen ── */
+#loadingScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f5f5f5}
+.loading-spinner{text-align:center;color:#737373}
+.loading-spinner i{font-size:28px;margin-bottom:12px;display:block;animation:spin .8s linear infinite}
+.loading-spinner p{font-size:13px}
+
 /* ── Login screen ── */
-#loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:#f5f5f5}
-.login-box{background:#fff;border-radius:20px;padding:40px 36px;width:100%;max-width:380px;box-shadow:0 8px 40px rgba(0,0,0,.1);text-align:center}
+#loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:#f5f5f5;display:none}
+.login-box{background:#fff;border-radius:20px;padding:40px 36px;width:100%;max-width:400px;box-shadow:0 8px 40px rgba(0,0,0,.1);text-align:center}
 .login-logo{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:28px}
 .login-logo img{width:36px;height:36px;border-radius:9px}
 .login-logo span{font-size:17px;font-weight:800;color:#0a0a0a}
-.login-title{font-size:18px;font-weight:800;margin-bottom:6px}
-.login-sub{font-size:13px;color:#737373;margin-bottom:24px}
-.login-input{width:100%;padding:11px 14px;border:1.5px solid #e5e5e5;border-radius:10px;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;margin-bottom:10px}
-.login-input:focus{border-color:#0a0a0a}
-.login-input.err{border-color:#ef4444;background:#fff8f8}
-.login-btn{width:100%;padding:12px;background:#0a0a0a;color:#fff;border:none;border-radius:11px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:background .2s;margin-top:2px}
-.login-btn:hover{background:#262626}
-.login-error{font-size:12.5px;color:#dc2626;background:#fff5f5;border:1px solid #fecaca;border-radius:8px;padding:9px 12px;margin-bottom:12px;display:none;text-align:left}
+.login-title{font-size:20px;font-weight:800;margin-bottom:6px}
+.login-sub{font-size:13px;color:#737373;margin-bottom:28px;line-height:1.6}
+.google-btn{width:100%;padding:13px;border:1.5px solid #e5e5e5;border-radius:12px;background:#fff;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;color:#0a0a0a;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:background .15s,border-color .15s,box-shadow .15s}
+.google-btn:hover{background:#f9f9f9;border-color:#d4d4d4;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.google-btn:disabled{opacity:.6;cursor:not-allowed}
+.login-error{font-size:12.5px;color:#dc2626;background:#fff5f5;border:1px solid #fecaca;border-radius:8px;padding:10px 14px;margin-top:14px;display:none;text-align:left;line-height:1.55}
+.login-note{font-size:11.5px;color:#a3a3a3;margin-top:16px;line-height:1.55}
+
+/* ── Access denied screen ── */
+#deniedScreen{min-height:100vh;display:none;align-items:center;justify-content:center;padding:20px;background:#f5f5f5}
+.denied-box{background:#fff;border-radius:20px;padding:40px 36px;width:100%;max-width:400px;box-shadow:0 8px 40px rgba(0,0,0,.1);text-align:center}
+.denied-icon{font-size:48px;margin-bottom:16px}
+.denied-title{font-size:18px;font-weight:800;color:#dc2626;margin-bottom:8px}
+.denied-sub{font-size:13px;color:#737373;line-height:1.6;margin-bottom:20px}
+.denied-email{display:inline-block;background:#f5f5f5;border-radius:8px;padding:6px 14px;font-family:'DM Mono',monospace;font-size:13px;color:#525252;margin-bottom:20px}
+.denied-btn{padding:10px 24px;background:#0a0a0a;color:#fff;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:background .2s}
+.denied-btn:hover{background:#262626}
 
 /* ── Admin layout ── */
 #adminScreen{display:none;min-height:100vh}
@@ -36,6 +56,9 @@ body{font-family:'DM Sans',sans-serif;background:#f5f5f5;color:#0a0a0a;min-heigh
 .admin-nav-brand span{font-size:14px;font-weight:800}
 .admin-nav-right{display:flex;align-items:center;gap:14px}
 .admin-badge{font-size:11px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);padding:4px 10px;border-radius:100px;font-weight:600}
+.admin-user{display:flex;align-items:center;gap:8px}
+.admin-user img{width:28px;height:28px;border-radius:50%;object-fit:cover}
+.admin-user span{font-size:12.5px;color:rgba(255,255,255,.7)}
 .logout-btn{font-size:12.5px;color:rgba(255,255,255,.55);background:none;border:1px solid rgba(255,255,255,.15);padding:6px 14px;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s}
 .logout-btn:hover{color:#fff;border-color:rgba(255,255,255,.4)}
 
@@ -57,6 +80,8 @@ body{font-family:'DM Sans',sans-serif;background:#f5f5f5;color:#0a0a0a;min-heigh
 .search-input:focus{border-color:#0a0a0a}
 .export-btn{display:flex;align-items:center;gap:7px;padding:8px 14px;background:#0a0a0a;color:#fff;border:none;border-radius:9px;font-size:12.5px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;transition:background .2s;text-decoration:none}
 .export-btn:hover{background:#262626}
+.refresh-btn{display:flex;align-items:center;gap:6px;padding:8px 12px;background:#f5f5f5;color:#0a0a0a;border:1.5px solid #e5e5e5;border-radius:9px;font-size:12.5px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .2s}
+.refresh-btn:hover{background:#e5e5e5}
 
 .tbl-wrap{overflow-x:auto}
 table{width:100%;border-collapse:collapse;font-size:13px}
@@ -75,14 +100,10 @@ td.td-sekolah span{font-size:11.5px;color:#737373}
 .td-date{font-size:12px;color:#525252;white-space:nowrap}
 .td-wa a{color:#16a34a;font-size:12.5px;font-weight:600;text-decoration:none;display:flex;align-items:center;gap:5px}
 .td-wa a:hover{text-decoration:underline}
-
 .empty-state{text-align:center;padding:60px 20px;color:#a3a3a3}
 .empty-state i{font-size:36px;margin-bottom:12px;display:block;opacity:.4}
 .empty-state p{font-size:14px}
-
 .loading-row td{text-align:center;padding:40px;color:#a3a3a3}
-
-/* ── Refresh spinner ── */
 .spin{animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
@@ -92,34 +113,63 @@ td.td-sekolah span{font-size:11.5px;color:#737373}
 .page-btn{padding:6px 12px;border:1.5px solid #e5e5e5;border-radius:7px;background:#fff;font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .15s}
 .page-btn:hover{border-color:#0a0a0a;color:#0a0a0a}
 .page-btn.active{background:#0a0a0a;color:#fff;border-color:#0a0a0a}
-.page-btn:disabled{opacity:.4;cursor:not-allowed}
 
 @media(max-width:700px){
   .stats-row{grid-template-columns:1fr 1fr}
-  .search-input{width:150px}
+  .search-input{width:140px}
   .admin-body{padding:20px 14px}
+  .admin-user span{display:none}
 }
 </style>
 </head>
 <body>
 
-<!-- ══════════ LOGIN SCREEN ══════════ -->
+<!-- ══ LOADING ══ -->
+<div id="loadingScreen">
+  <div class="loading-spinner">
+    <i class="fa-solid fa-spinner"></i>
+    <p>Memuat…</p>
+  </div>
+</div>
+
+<!-- ══ LOGIN ══ -->
 <div id="loginScreen">
   <div class="login-box">
     <div class="login-logo">
       <img src="https://i.imgur.com/bT70O4C.png" alt="Emes CBT">
       <span>Emes CBT Admin</span>
     </div>
-    <div class="login-title">Halaman Admin</div>
-    <div class="login-sub">Masukkan password admin untuk mengakses data.</div>
-    <div class="login-error" id="loginError">Password salah. Coba lagi.</div>
-    <input type="password" class="login-input" id="adminPassword"
-      placeholder="Password admin" onkeydown="if(event.key==='Enter')checkLogin()">
-    <button class="login-btn" onclick="checkLogin()">Masuk →</button>
+    <div class="login-title">Masuk ke Dashboard Admin</div>
+    <div class="login-sub">Halaman ini hanya dapat diakses oleh admin yang berwenang.</div>
+    <button class="google-btn" id="googleLoginBtn" onclick="signInAdmin()">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908C16.658 14.013 17.64 11.706 17.64 9.2z"/>
+        <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/>
+        <path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/>
+        <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
+      </svg>
+      Masuk dengan Google
+    </button>
+    <div class="login-error" id="loginError"></div>
+    <div class="login-note">Hanya akun yang terdaftar sebagai admin yang dapat mengakses halaman ini.</div>
   </div>
 </div>
 
-<!-- ══════════ ADMIN SCREEN ══════════ -->
+<!-- ══ AKSES DITOLAK ══ -->
+<div id="deniedScreen">
+  <div class="denied-box">
+    <div class="denied-icon">🚫</div>
+    <div class="denied-title">Akses Ditolak</div>
+    <div class="denied-sub">Akun Google Anda tidak memiliki izin untuk mengakses halaman admin ini.</div>
+    <div class="denied-email" id="deniedEmail"></div>
+    <br>
+    <button class="denied-btn" onclick="signOutAdmin()">
+      <i class="fa-solid fa-right-from-bracket"></i> Keluar & Coba Akun Lain
+    </button>
+  </div>
+</div>
+
+<!-- ══ ADMIN SCREEN ══ -->
 <div id="adminScreen">
   <nav class="admin-nav">
     <div class="admin-nav-brand">
@@ -128,12 +178,17 @@ td.td-sekolah span{font-size:11.5px;color:#737373}
     </div>
     <div class="admin-nav-right">
       <span class="admin-badge" id="navBadge">0 pendaftar</span>
-      <button class="logout-btn" onclick="doLogout()"><i class="fa-solid fa-right-from-bracket"></i> Keluar</button>
+      <div class="admin-user">
+        <img id="adminPhoto" src="" alt="">
+        <span id="adminName"></span>
+      </div>
+      <button class="logout-btn" onclick="signOutAdmin()">
+        <i class="fa-solid fa-right-from-bracket"></i> Keluar
+      </button>
     </div>
   </nav>
 
   <div class="admin-body">
-
     <!-- Stats -->
     <div class="stats-row">
       <div class="stat-card">
@@ -158,12 +213,13 @@ td.td-sekolah span{font-size:11.5px;color:#737373}
       <div class="table-header">
         <h2><i class="fa-solid fa-school" style="margin-right:7px;opacity:.5"></i>Data Sekolah Pendaftar</h2>
         <div class="tbl-actions">
-          <input type="text" class="search-input" id="searchInput" placeholder="Cari nama / sekolah / kota…" oninput="filterTable()">
+          <input type="text" class="search-input" id="searchInput"
+            placeholder="Cari nama / sekolah / kota…" oninput="filterTable()">
+          <button class="refresh-btn" onclick="loadData()">
+            <i class="fa-solid fa-rotate-right" id="refreshIcon"></i> Refresh
+          </button>
           <button class="export-btn" onclick="exportCSV()">
             <i class="fa-solid fa-file-csv"></i> Export CSV
-          </button>
-          <button class="export-btn" style="background:#f5f5f5;color:#0a0a0a" onclick="loadData()">
-            <i class="fa-solid fa-rotate-right" id="refreshIcon"></i>
           </button>
         </div>
       </div>
@@ -176,31 +232,35 @@ td.td-sekolah span{font-size:11.5px;color:#737373}
               <th>Sekolah</th>
               <th>NPSN</th>
               <th>Jenjang</th>
-              <th>Kota</th>
+              <th>Kab/Kota</th>
               <th>Provinsi</th>
               <th>WhatsApp</th>
-              <th>Tanggal Download</th>
+              <th>Tanggal</th>
             </tr>
           </thead>
           <tbody id="dataTableBody">
-            <tr class="loading-row"><td colspan="9"><i class="fa-solid fa-spinner fa-spin"></i> Memuat data…</td></tr>
+            <tr class="loading-row">
+              <td colspan="9"><i class="fa-solid fa-spinner fa-spin"></i> Memuat data…</td>
+            </tr>
           </tbody>
         </table>
       </div>
       <div class="pagination">
-        <span id="paginationInfo">Menampilkan 0–0 dari 0</span>
+        <span id="paginationInfo">—</span>
         <div class="page-btns" id="pageButtons"></div>
       </div>
     </div>
-
   </div>
 </div>
 
 <script>
-/* ═══════════════════════════════════════════════════
-   KONFIGURASI — Ganti ADMIN_PASSWORD sesuai keinginan
-═══════════════════════════════════════════════════ */
-const ADMIN_PASSWORD = 'admin123emes'; // ← GANTI PASSWORDNYA
+/* ════════════════════════════════════════════════
+   KONFIGURASI
+════════════════════════════════════════════════ */
+// Daftar email yang boleh akses admin
+const ALLOWED_EMAILS = [
+  'mr.mahfudsidik@gmail.com'
+];
 
 firebase.initializeApp({
   apiKey:            "AIzaSyAK9kA3GD-Os4eaCl7CFRnf0KMopTqdPKo",
@@ -210,39 +270,82 @@ firebase.initializeApp({
   messagingSenderId: "142290685592",
   appId:             "1:142290685592:web:a1c2935b2877d5354c8aed"
 });
-const db = firebase.firestore();
 
-/* ── Login ───────────────────────────────────────── */
-function checkLogin() {
-  const pw = document.getElementById('adminPassword').value;
-  document.getElementById('loginError').style.display = 'none';
-  document.getElementById('adminPassword').classList.remove('err');
-  if (pw === ADMIN_PASSWORD) {
-    sessionStorage.setItem('emes_admin', '1');
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('adminScreen').style.display = '';
+const auth = firebase.auth();
+const db   = firebase.firestore();
+
+/* ════════════════════════════════════════════════
+   AUTH STATE — cek login saat halaman dibuka
+════════════════════════════════════════════════ */
+auth.onAuthStateChanged(function(user) {
+  show('loadingScreen', false);
+  if (!user) {
+    // Belum login → tampilkan login
+    show('loginScreen', true);
+    return;
+  }
+  // Sudah login → cek apakah emailnya allowed
+  if (ALLOWED_EMAILS.includes(user.email)) {
+    // Admin sah
+    document.getElementById('adminPhoto').src = user.photoURL || '';
+    document.getElementById('adminName').textContent = user.displayName || user.email;
+    show('adminScreen', true);
     loadData();
   } else {
-    document.getElementById('loginError').style.display = 'block';
-    document.getElementById('adminPassword').classList.add('err');
-    document.getElementById('adminPassword').value = '';
+    // Bukan admin
+    document.getElementById('deniedEmail').textContent = user.email;
+    show('deniedScreen', true);
+  }
+});
+
+function show(id, visible) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (id === 'deniedScreen' || id === 'adminScreen') {
+    el.style.display = visible ? 'block' : 'none';
+  } else if (id === 'loginScreen') {
+    el.style.display = visible ? 'flex' : 'none';
+  } else {
+    el.style.display = visible ? 'flex' : 'none';
   }
 }
 
-function doLogout() {
-  sessionStorage.removeItem('emes_admin');
-  document.getElementById('adminScreen').style.display = 'none';
-  document.getElementById('loginScreen').style.display = 'flex';
-  document.getElementById('adminPassword').value = '';
+/* ════════════════════════════════════════════════
+   SIGN IN / OUT
+════════════════════════════════════════════════ */
+async function signInAdmin() {
+  const btn = document.getElementById('googleLoginBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Membuka Google…';
+  document.getElementById('loginError').style.display = 'none';
+  try {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: 'select_account' });
+    await auth.signInWithPopup(provider);
+    // onAuthStateChanged akan handle sisanya
+  } catch(err) {
+    let msg = 'Gagal masuk. Coba lagi.';
+    if (err.code === 'auth/popup-closed-by-user') msg = 'Popup ditutup. Klik tombol Google lagi.';
+    if (err.code === 'auth/popup-blocked') msg = 'Popup diblokir browser. Izinkan popup lalu coba lagi.';
+    const errEl = document.getElementById('loginError');
+    errEl.textContent = msg;
+    errEl.style.display = 'block';
+    btn.disabled = false;
+    btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908C16.658 14.013 17.64 11.706 17.64 9.2z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/><path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg> Masuk dengan Google`;
+  }
 }
 
-// Auto-login jika masih ada session
-if (sessionStorage.getItem('emes_admin')) {
-  document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('adminScreen').style.display = '';
+async function signOutAdmin() {
+  await auth.signOut();
+  // Sembunyikan semua, tampilkan login
+  show('adminScreen', false);
+  show('deniedScreen', false);
+  show('loginScreen', true);
 }
 
-/* ── Data ────────────────────────────────────────── */
+/* ════════════════════════════════════════════════
+   DATA
+════════════════════════════════════════════════ */
 let allData = [];
 let filtered = [];
 const PAGE_SIZE = 20;
@@ -251,6 +354,8 @@ let currentPage = 1;
 async function loadData() {
   const icon = document.getElementById('refreshIcon');
   icon.classList.add('spin');
+  document.getElementById('dataTableBody').innerHTML =
+    '<tr class="loading-row"><td colspan="9"><i class="fa-solid fa-spinner fa-spin"></i> Memuat data…</td></tr>';
   try {
     const snap = await db.collection('downloads').orderBy('downloadedAt', 'desc').get();
     allData = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -266,11 +371,9 @@ async function loadData() {
 }
 
 function updateStats() {
-  const total = allData.length;
-  document.getElementById('statTotal').textContent = total;
-  document.getElementById('navBadge').textContent = total + ' pendaftar';
+  document.getElementById('statTotal').textContent = allData.length;
+  document.getElementById('navBadge').textContent  = allData.length + ' pendaftar';
 
-  // Bulan ini
   const now = new Date();
   const thisMonth = allData.filter(d => {
     if (!d.downloadedAt) return false;
@@ -281,7 +384,6 @@ function updateStats() {
   document.getElementById('statMonthLabel').textContent =
     now.toLocaleString('id-ID', {month:'long', year:'numeric'});
 
-  // Top provinsi
   const provCount = {};
   allData.forEach(d => { if (d.provinsi) provCount[d.provinsi] = (provCount[d.provinsi]||0)+1; });
   const topProv = Object.entries(provCount).sort((a,b)=>b[1]-a[1])[0];
@@ -325,11 +427,12 @@ function renderTable() {
     const dt = d.downloadedAt
       ? (d.downloadedAt.toDate ? d.downloadedAt.toDate() : new Date(d.downloadedAt))
       : null;
-    const dateStr = dt ? dt.toLocaleString('id-ID',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '—';
+    const dateStr = dt
+      ? dt.toLocaleString('id-ID',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})
+      : '—';
     const waClean = (d.wa||'').replace(/\D/g,'').replace(/^0/,'62');
-    const nomor = start + i + 1;
     return `<tr>
-      <td class="td-num">${nomor}</td>
+      <td class="td-num">${start+i+1}</td>
       <td class="td-name"><strong>${esc(d.nama||'—')}</strong><span>${esc(d.email||'')}</span></td>
       <td class="td-sekolah"><strong>${esc(d.sekolah||'—')}</strong></td>
       <td><span class="npsn-badge">${esc(d.npsn||'—')}</span></td>
@@ -343,15 +446,13 @@ function renderTable() {
     </tr>`;
   }).join('');
 
-  // Pagination info
   document.getElementById('paginationInfo').textContent =
     `Menampilkan ${start+1}–${end} dari ${filtered.length} pendaftar`;
 
-  // Page buttons
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
   let btns = '';
   for (let p = 1; p <= totalPages; p++) {
-    if (totalPages > 8 && p > 3 && p < totalPages - 1 && Math.abs(p - currentPage) > 1) {
+    if (totalPages > 8 && p > 3 && p < totalPages-1 && Math.abs(p-currentPage) > 1) {
       if (p === 4) btns += '<span style="padding:0 4px;color:#a3a3a3">…</span>';
       continue;
     }
@@ -366,29 +467,29 @@ function esc(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-/* ── Export CSV ──────────────────────────────────── */
+/* ════════════════════════════════════════════════
+   EXPORT CSV
+════════════════════════════════════════════════ */
 function exportCSV() {
   const headers = ['No','Nama PIC','Email','Sekolah','NPSN','Jenjang','Kab/Kota','Provinsi','WhatsApp','Tanggal Download'];
   const rows = filtered.map((d, i) => {
     const dt = d.downloadedAt
       ? (d.downloadedAt.toDate ? d.downloadedAt.toDate() : new Date(d.downloadedAt))
       : null;
-    const dateStr = dt ? dt.toLocaleString('id-ID') : '';
     return [i+1, d.nama||'', d.email||'', d.sekolah||'', d.npsn||'', d.jenjang||'',
-            d.kota||'', d.provinsi||'', d.wa||'', dateStr]
+            d.kota||'', d.provinsi||'', d.wa||'', dt ? dt.toLocaleString('id-ID') : '']
       .map(v => `"${String(v).replace(/"/g,'""')}"`)
       .join(',');
   });
-  const csv = '\uFEFF' + [headers.join(','), ...rows].join('\n');
+  const csv  = '\uFEFF' + [headers.join(','), ...rows].join('\n');
   const blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
   const url  = URL.createObjectURL(blob);
   const a    = document.createElement('a');
-  a.href = url; a.download = `emes-cbt-pendaftar-${new Date().toISOString().slice(0,10)}.csv`;
-  a.click(); URL.revokeObjectURL(url);
+  a.href = url;
+  a.download = `emes-cbt-pendaftar-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
 }
-
-// Load jika sudah login
-if (sessionStorage.getItem('emes_admin')) loadData();
 </script>
 </body>
 </html>
