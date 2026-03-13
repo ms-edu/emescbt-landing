@@ -998,6 +998,33 @@ footer{background:#fff;border-top:1px solid #e5e5e5;padding:40px 40px 28px;color
           </ul>
           
         </div>
+      </div>
+      <div class="price-info reveal" style="margin-top:20px">
+        <i class="fa-solid fa-circle-info"></i>
+        <div>Trial cocok untuk mencoba sistem sebelum upgrade. Siap upgrade? Pilih <strong><a onclick="switchPricing('std');document.querySelectorAll('#pricingToggle button')[1].classList.add('active')" style="color:#0a0a0a;cursor:pointer">Standard</a></strong> atau <strong><a onclick="switchPricing('pro');document.querySelectorAll('#pricingToggle button')[2].classList.add('active')" style="color:#2563eb;cursor:pointer">Pro</a></strong> untuk fitur lengkap.</div>
+      </div>
+    </div>
+
+    <!-- Standard Pricing -->
+    <div id="pricing-std" class="reveal">
+      <div style="text-align:center;margin-bottom:24px">
+        <span class="tier-badge std"><i class="fa-solid fa-database"></i> Express + SQLite — Cocok untuk sekolah hingga ~200 siswa bersamaan</span>
+      </div>
+      <div class="pricing-grid">
+        <div class="price-card">
+          <div class="price-plan">1 Semester</div>
+          <div class="price-amount">Rp 350.000<small>/lisensi</small></div>
+          <div class="price-note">Aktif ±6 bulan — cocok untuk 1 semester akademik atau coba sebelum komitmen lebih lama</div>
+          <ul class="price-features">
+            <li><i class="fa-solid fa-check"></i> Ujian online</li>
+            <li><i class="fa-solid fa-check"></i> Cetak hasil ujian</li>
+            <li><i class="fa-solid fa-xmark" style="color:#d1d5db"></i> <span style="color:#9ca3af">Cetak soal</span></li>
+            <li><i class="fa-solid fa-xmark" style="color:#d1d5db"></i> <span style="color:#9ca3af">Ekspor data</span></li>
+            <li><i class="fa-solid fa-check"></i> Maks 200 siswa bersamaan</li>
+            <li><i class="fa-solid fa-check"></i> Data di server sekolah (SQLite)</li>
+          </ul>
+          
+        </div>
         <div class="price-card popular">
           <div class="popular-badge">⭐ TERPOPULER</div>
           <div class="price-plan">Tahunan</div>
