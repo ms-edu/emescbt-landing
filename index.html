@@ -1376,6 +1376,7 @@ tr.ver-cat td{background:#f5f5f5;font-size:10px;font-weight:800;text-transform:u
         <button class="panduan-tab active" onclick="switchPanduanTab('admin')"><i class="fa-solid fa-user-shield"></i> Panduan Admin & Guru</button>
         <button class="panduan-tab" onclick="switchPanduanTab('siswa')"><i class="fa-solid fa-graduation-cap"></i> Panduan Siswa</button>
         <button class="panduan-tab" onclick="switchPanduanTab('jaringan')"><i class="fa-solid fa-network-wired"></i> Setting Jaringan</button>
+        <button class="panduan-tab" onclick="switchPanduanTab('setting')"><i class="fa-solid fa-globe"></i> Go Online</button>
       </div>
     </div>
   </div>
@@ -1391,6 +1392,7 @@ tr.ver-cat td{background:#f5f5f5;font-size:10px;font-weight:800;text-transform:u
         <div class="step-nav-item" onclick="scrollToStep(5)"><div class="step-nav-num">5</div><div class="step-nav-label">Monitor & Kontrol</div></div>
         <div class="step-nav-item" onclick="scrollToStep(6)"><div class="step-nav-num">6</div><div class="step-nav-label">Hasil & Analisis</div></div>
         <div class="step-nav-item" onclick="scrollToStep(7)"><div class="step-nav-num">7</div><div class="step-nav-label">Koreksi Essay</div></div>
+        <div class="step-nav-item" onclick="scrollToStep(8)"><div class="step-nav-num">8</div><div class="step-nav-label">Kelola User & Role</div></div>
       </div>
       <div class="steps-content">
         <div class="step-card" id="step-1">
@@ -1422,27 +1424,30 @@ tr.ver-cat td{background:#f5f5f5;font-size:10px;font-weight:800;text-transform:u
         <div class="step-card" id="step-3">
           <div class="step-card-header"><div class="step-num-big">3</div><div><div class="step-title">Membuat Bank Soal</div><div class="step-subtitle">Menu: Bank Soal → Paket Soal & Butir Soal</div></div></div>
           <div class="step-body">
+            <div class="step-info" style="background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#1e40af;display:flex;gap:10px;align-items:flex-start"><i class="fa-solid fa-circle-info" style="margin-top:2px;flex-shrink:0"></i><div><strong>Alur RBAC Bank Soal:</strong> Hanya <strong>Admin</strong> yang dapat membuat paket soal dan menentukan guru penyusunnya. <strong>Guru</strong> hanya melihat paket yang ditugaskan kepadanya dan mengisi butir soal di dalamnya. Guru <em>tidak dapat</em> membuat paket soal atau jadwal ujian sendiri.</div></div>
             <div class="step-items">
-              <div class="step-item"><div class="step-item-num">a</div><div class="step-item-content"><div class="step-item-title">Buat Paket Soal Baru</div><div class="step-item-desc">Klik <strong>+ Paket Baru</strong>, isi nama ujian, mata pelajaran, kelas target, jumlah soal, waktu, dan KKM.</div></div></div>
-              <div class="step-item"><div class="step-item-num">b</div><div class="step-item-content"><div class="step-item-title">Tambah Butir Soal Manual</div><div class="step-item-desc">Pilih tipe soal (PG, PG Kompleks, Essay, Menjodohkan, Benar/Salah), ketik pertanyaan menggunakan editor kaya — termasuk gambar, rumus KaTeX, dan tabel.</div></div></div>
-              <div class="step-item"><div class="step-item-num">c</div><div class="step-item-content"><div class="step-item-title">Import dari Word (.docx)</div><div class="step-item-desc">Punya file Word? Klik <strong>Import Word</strong>, pilih file .docx berisi soal bergaya pilihan ganda standar — sistem otomatis mengurai soal dan opsi jawaban.</div></div></div>
-              <div class="step-item"><div class="step-item-num">d</div><div class="step-item-content"><div class="step-item-title">Input Rumus KaTeX</div><div class="step-item-desc">Klik tombol <strong>∑ Rumus</strong> di toolbar editor, pilih template formula atau ketik sintaks LaTeX langsung. Preview muncul real-time sebelum disimpan.</div></div></div>
-              <div class="step-item"><div class="step-item-num">e</div><div class="step-item-content"><div class="step-item-title">Atur Kunci Jawaban & Bobot</div><div class="step-item-desc">Untuk PG, centang opsi yang benar. Untuk essay, tentukan skor maksimal. Bobot nilai dihitung otomatis berdasarkan total soal dan tipe.</div></div></div>
+              <div class="step-item"><div class="step-item-num">a</div><div class="step-item-content"><div class="step-item-title">Admin: Buat Paket Soal &amp; Assign Guru</div><div class="step-item-desc">Klik <strong>+ Tambah Paket</strong>, isi kode soal, nama ujian, mata pelajaran, kelas, dan KKM. Di bagian bawah form, pilih <strong>Guru Penyusun Soal</strong> dari dropdown — hanya guru yang dipilih yang bisa mengakses paket ini.</div></div></div>
+              <div class="step-item"><div class="step-item-num">b</div><div class="step-item-content"><div class="step-item-title">Guru: Isi Butir Soal dari Paket Tugasnya</div><div class="step-item-desc">Saat guru login, menu <strong>Paket Soal</strong> hanya menampilkan paket yang ditugaskan admin kepadanya (badge <em>"Tugas dari admin"</em>). Guru klik paket tersebut → masuk ke menu Butir Soal → tambah soal satu per satu, import Excel, atau import Word.</div></div></div>
+              <div class="step-item"><div class="step-item-num">c</div><div class="step-item-content"><div class="step-item-title">Tambah Butir Soal Manual</div><div class="step-item-desc">Klik <strong>+ Tambah Soal</strong>, pilih tipe soal (PG, PG Kompleks, Essay, Menjodohkan, Benar/Salah), ketik pertanyaan menggunakan editor kaya — termasuk gambar, rumus KaTeX, dan tabel.</div></div></div>
+              <div class="step-item"><div class="step-item-num">d</div><div class="step-item-content"><div class="step-item-title">Import dari Word (.docx)</div><div class="step-item-desc">Klik <strong>Import Word</strong>, pilih file .docx — sistem otomatis mengurai soal dan opsi jawaban. Guru hanya bisa import ke paket yang menjadi tugasnya.</div></div></div>
+              <div class="step-item"><div class="step-item-num">e</div><div class="step-item-content"><div class="step-item-title">Input Rumus KaTeX</div><div class="step-item-desc">Klik tombol <strong>∑ Rumus</strong> di toolbar editor, pilih template formula atau ketik sintaks LaTeX langsung. Preview muncul real-time sebelum disimpan.</div></div></div>
+              <div class="step-item"><div class="step-item-num">f</div><div class="step-item-content"><div class="step-item-title">Atur Kunci Jawaban &amp; Bobot</div><div class="step-item-desc">Untuk PG, centang opsi yang benar. Untuk essay, tentukan skor maksimal. Bobot nilai dihitung otomatis berdasarkan total soal dan tipe.</div></div></div>
             </div>
             <div class="step-tip"><i class="fa-solid fa-lightbulb"></i><span>Format Word yang didukung: soal diawali nomor, diikuti 4–5 opsi (A. B. C. D. E.), kunci jawaban di baris terakhir per soal atau di akhir file.</span></div>
           </div>
         </div>
 
         <div class="step-card" id="step-4">
-          <div class="step-card-header"><div class="step-num-big">4</div><div><div class="step-title">Menjadwalkan Ujian</div><div class="step-subtitle">Menu: Pelaksanaan Ujian → Jadwal Ujian</div></div></div>
+          <div class="step-card-header"><div class="step-num-big">4</div><div><div class="step-title">Menjadwalkan Ujian</div><div class="step-subtitle">Menu: Pelaksanaan Ujian → Jadwal Ujian — <span style="color:#dc2626;font-weight:700">Hanya Admin</span></div></div></div>
           <div class="step-body">
+            <div class="step-info" style="background:#fff7ed;border:1.5px solid #fed7aa;border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#9a3412;display:flex;gap:10px;align-items:flex-start"><i class="fa-solid fa-shield-halved" style="margin-top:2px;flex-shrink:0"></i><div>Penjadwalan ujian sepenuhnya dikendalikan oleh <strong>Admin</strong>. Guru dan Proktor tidak dapat membuat, mengubah, atau menghapus jadwal ujian. Guru hanya dapat melihat jadwal yang relevan dengan paket soal mereka.</div></div>
             <div class="step-items">
-              <div class="step-item"><div class="step-item-num">a</div><div class="step-item-content"><div class="step-item-title">Buat Jadwal Baru</div><div class="step-item-desc">Klik <strong>+ Jadwal Baru</strong>, pilih paket soal yang sudah dibuat, tentukan tanggal, jam buka, dan jam tutup ujian.</div></div></div>
-              <div class="step-item"><div class="step-item-num">b</div><div class="step-item-content"><div class="step-item-title">Pilih Target Peserta</div><div class="step-item-desc">Pilih kelas dan rombel yang akan mengikuti ujian ini. Siswa di rombel tersebut otomatis muncul di daftar peserta ujian.</div></div></div>
-              <div class="step-item"><div class="step-item-num">c</div><div class="step-item-content"><div class="step-item-title">Atur Token (Opsional)</div><div class="step-item-desc">Aktifkan <strong>Token Ujian</strong> agar siswa harus memasukkan kode yang Anda berikan sebelum bisa mulai. Cocok sebagai kendali tambahan di ruang ujian.</div></div></div>
-              <div class="step-item"><div class="step-item-num">d</div><div class="step-item-content"><div class="step-item-title">Aktifkan Randomisasi</div><div class="step-item-desc">Centang <strong>Acak Soal</strong> dan <strong>Acak Jawaban</strong> agar urutan soal dan opsi berbeda setiap siswa — efektif mencegah kecurangan.</div></div></div>
+              <div class="step-item"><div class="step-item-num">a</div><div class="step-item-content"><div class="step-item-title">Buat Jadwal Baru</div><div class="step-item-desc">Klik <strong>+ Tambah Jadwal</strong>, pilih paket soal yang sudah dibuat (dan sudah terisi butir soal), tentukan tanggal, jam buka, dan jam tutup ujian.</div></div></div>
+              <div class="step-item"><div class="step-item-num">b</div><div class="step-item-content"><div class="step-item-title">Pilih Target Peserta</div><div class="step-item-desc">Pilih kelas dan rombel yang akan mengikuti ujian ini. Siswa di rombel tersebut otomatis muncul di daftar peserta saat monitor ujian aktif.</div></div></div>
+              <div class="step-item"><div class="step-item-num">c</div><div class="step-item-content"><div class="step-item-title">Atur Token (Opsional)</div><div class="step-item-desc">Aktifkan <strong>Token Ujian</strong> agar siswa harus memasukkan kode yang Anda berikan sebelum bisa mulai. Token bisa dibroadcast ke siswa melalui fitur <strong>Chat → Broadcast</strong>.</div></div></div>
+              <div class="step-item"><div class="step-item-num">d</div><div class="step-item-content"><div class="step-item-title">Aktifkan Randomisasi &amp; Fullscreen</div><div class="step-item-desc">Centang <strong>Acak Soal</strong> dan <strong>Acak Jawaban</strong> agar urutan berbeda tiap siswa. Centang <strong>Paksa Fullscreen</strong> agar siswa tidak bisa keluar dari layar ujian tanpa peringatan.</div></div></div>
             </div>
-            <div class="step-warn"><i class="fa-solid fa-triangle-exclamation"></i><span>Pastikan jam buka dan tutup sudah benar sebelum menyimpan. Siswa hanya bisa masuk ke ujian dalam rentang waktu yang ditentukan.</span></div>
+            <div class="step-warn"><i class="fa-solid fa-triangle-exclamation"></i><span>Pastikan paket soal sudah terisi butir soal sebelum membuat jadwal. Siswa hanya bisa masuk ke ujian dalam rentang waktu yang ditentukan.</span></div>
           </div>
         </div>
 
@@ -1450,10 +1455,11 @@ tr.ver-cat td{background:#f5f5f5;font-size:10px;font-weight:800;text-transform:u
           <div class="step-card-header"><div class="step-num-big">5</div><div><div class="step-title">Monitor & Kontrol Ujian Live</div><div class="step-subtitle">Menu: Pelaksanaan Ujian → Monitor Ujian</div></div></div>
           <div class="step-body">
             <div class="step-items">
-              <div class="step-item"><div class="step-item-num">a</div><div class="step-item-content"><div class="step-item-title">Pilih Sesi Ujian yang Dipantau</div><div class="step-item-desc">Dari dropdown, pilih paket soal yang sedang berlangsung. Daftar peserta beserta status langsung muncul dan diperbarui otomatis.</div></div></div>
-              <div class="step-item"><div class="step-item-num">b</div><div class="step-item-content"><div class="step-item-title">Lihat Status per Siswa</div><div class="step-item-desc">Setiap siswa terlihat: sedang mengerjakan, berapa soal sudah dijawab, berapa menit tersisa, dan apakah sudah selesai submit.</div></div></div>
-              <div class="step-item"><div class="step-item-num">c</div><div class="step-item-content"><div class="step-item-title">Paksa Selesai (Force Finish)</div><div class="step-item-desc">Jika diperlukan, admin bisa memaksa siswa tertentu untuk selesai — jawaban yang sudah ada otomatis disimpan dan dinilai.</div></div></div>
-              <div class="step-item"><div class="step-item-num">d</div><div class="step-item-content"><div class="step-item-title">Chat dengan Siswa</div><div class="step-item-desc">Siswa yang mengirim pertanyaan via Chat akan muncul notifikasi. Klik menu <strong>Chat Siswa</strong> untuk membalas langsung.</div></div></div>
+              <div class="step-item"><div class="step-item-num">a</div><div class="step-item-content"><div class="step-item-title">Pilih Sesi Ujian yang Dipantau</div><div class="step-item-desc">Dari dropdown, pilih paket soal yang sedang berlangsung. Daftar peserta beserta status langsung muncul dan diperbarui otomatis setiap beberapa detik.</div></div></div>
+              <div class="step-item"><div class="step-item-num">b</div><div class="step-item-content"><div class="step-item-title">Lihat Status per Siswa</div><div class="step-item-desc">Setiap siswa terlihat: <em>Sedang Ujian</em>, <em>Idle</em>, <em>Selesai</em>, atau <em>Belum Mulai</em>. Lihat berapa soal sudah dijawab dan berapa menit tersisa.</div></div></div>
+              <div class="step-item"><div class="step-item-num">c</div><div class="step-item-content"><div class="step-item-title">Paksa Selesai &amp; Reset Ujian</div><div class="step-item-desc">Paksa siswa tertentu untuk selesai — jawaban tersimpan otomatis. Atau reset ujian siswa tertentu agar bisa mengulang dari awal jika terjadi masalah teknis.</div></div></div>
+              <div class="step-item"><div class="step-item-num">d</div><div class="step-item-content"><div class="step-item-title">Chat Real-time &amp; Notifikasi</div><div class="step-item-desc">Badge merah di menu <strong>Chat Siswa</strong> muncul otomatis saat ada pesan baru dari siswa. Klik untuk membalas. Pesan baru muncul sebagai toast notifikasi di pojok layar.</div></div></div>
+              <div class="step-item"><div class="step-item-num">e</div><div class="step-item-content"><div class="step-item-title">Broadcast Pengumuman ke Semua Siswa</div><div class="step-item-desc">Di header menu Chat, klik tombol <strong>📢 Broadcast</strong>. Pilih template (Token Ujian, Jam Mulai, atau Perhatian) atau ketik pesan manual. Pesan tampil sebagai banner kuning di layar semua siswa secara bersamaan.</div></div></div>
             </div>
             <div class="step-tip"><i class="fa-solid fa-lightbulb"></i><span>Halaman Monitor Ujian otomatis refresh — tidak perlu F5. Buka di layar besar atau proyektor untuk memantau seluruh kelas sekaligus.</span></div>
           </div>
@@ -1463,10 +1469,11 @@ tr.ver-cat td{background:#f5f5f5;font-size:10px;font-weight:800;text-transform:u
           <div class="step-card-header"><div class="step-num-big">6</div><div><div class="step-title">Lihat Hasil & Analisis</div><div class="step-subtitle">Menu: Hasil & Laporan → Hasil Ujian / Analisa Per-butir</div></div></div>
           <div class="step-body">
             <div class="step-items">
-              <div class="step-item"><div class="step-item-num">a</div><div class="step-item-content"><div class="step-item-title">Rekap Nilai per Kelas</div><div class="step-item-desc">Buka menu <strong>Hasil Ujian</strong>, pilih paket soal. Tabel menampilkan seluruh peserta, nilai, ketuntasan, jumlah benar/salah, dan tanggal ujian.</div></div></div>
-              <div class="step-item"><div class="step-item-num">b</div><div class="step-item-content"><div class="step-item-title">Export ke Excel</div><div class="step-item-desc">Klik <strong>Export Excel</strong> untuk download rekap dalam format .xlsx. File berisi dua sheet: rekap nilai dan statistik kelas.</div></div></div>
-              <div class="step-item"><div class="step-item-num">c</div><div class="step-item-content"><div class="step-item-title">Analisis Butir Soal</div><div class="step-item-desc">Menu <strong>Analisa Per-butir</strong> menampilkan tingkat kesukaran, daya beda, dan reliabilitas setiap soal. Soal bermasalah ditandai otomatis.</div></div></div>
-              <div class="step-item"><div class="step-item-num">d</div><div class="step-item-content"><div class="step-item-title">Leaderboard</div><div class="step-item-desc">Menu <strong>Leaderboard</strong> menampilkan peringkat siswa berdasarkan nilai. Bisa difilter per kelas dan rombel.</div></div></div>
+              <div class="step-item"><div class="step-item-num">a</div><div class="step-item-content"><div class="step-item-title">Rekap Nilai per Kelas &amp; Ruang</div><div class="step-item-desc">Buka menu <strong>Hasil Ujian</strong>, pilih paket soal. Filter <strong>Kelas</strong> dan <strong>Ruang</strong> (rombel) tersedia untuk mempersempit tampilan. Tabel menampilkan nilai, status tuntas/belum, jumlah benar/salah, dan tanggal ujian.</div></div></div>
+              <div class="step-item"><div class="step-item-num">b</div><div class="step-item-content"><div class="step-item-title">Hitung Ulang dengan KKM Terbaru</div><div class="step-item-desc">Jika KKM sudah diubah di Pengaturan, klik tombol <strong>Hitung Ulang</strong> di halaman Hasil Ujian — semua status tuntas/belum tuntas langsung diperbarui berdasarkan KKM terkini tanpa mengubah nilai siswa.</div></div></div>
+              <div class="step-item"><div class="step-item-num">c</div><div class="step-item-content"><div class="step-item-title">Export ke Excel</div><div class="step-item-desc">Klik <strong>Export Excel</strong> untuk download rekap dalam format .xlsx. Kolom <em>Ruang</em> (rombel) ikut tersedia di file export untuk kebutuhan rekap per ruang.</div></div></div>
+              <div class="step-item"><div class="step-item-num">d</div><div class="step-item-content"><div class="step-item-title">Analisis Butir Soal</div><div class="step-item-desc">Menu <strong>Analisa Per-butir</strong> menampilkan tingkat kesukaran, daya beda, dan reliabilitas setiap soal. Soal bermasalah ditandai otomatis — bisa filter per ruang ujian.</div></div></div>
+              <div class="step-item"><div class="step-item-num">e</div><div class="step-item-content"><div class="step-item-title">Leaderboard &amp; Daftar Hadir</div><div class="step-item-desc">Menu <strong>Leaderboard</strong> menampilkan peringkat siswa — filter per kelas dan ruang tersedia. Menu <strong>Daftar Hadir</strong> otomatis mencatat kehadiran siswa berdasarkan aktivitas ujian, siap cetak.</div></div></div>
             </div>
           </div>
         </div>
@@ -1480,6 +1487,27 @@ tr.ver-cat td{background:#f5f5f5;font-size:10px;font-weight:800;text-transform:u
               <div class="step-item"><div class="step-item-num">c</div><div class="step-item-content"><div class="step-item-title">Simpan — Nilai Terhitung Otomatis</div><div class="step-item-desc">Setelah klik <strong>Simpan Koreksi</strong>, nilai final siswa dihitung ulang menggabungkan skor PG dan skor essay. Status berubah menjadi "Selesai".</div></div></div>
             </div>
             <div class="step-tip"><i class="fa-solid fa-lightbulb"></i><span>Nilai final = (Skor PG + Skor Essay) ÷ Total Skor Maksimal × 100. Formula ini berlaku otomatis dan tidak perlu dihitung manual.</span></div>
+          </div>
+        </div>
+        <div class="step-card" id="step-8">
+          <div class="step-card-header"><div class="step-num-big">8</div><div><div class="step-title">Kelola User &amp; Role</div><div class="step-subtitle">Menu: Data Pengguna → Manajemen User — <span style="color:#dc2626;font-weight:700">Hanya Admin</span></div></div></div>
+          <div class="step-body">
+            <div class="step-items">
+              <div class="step-item"><div class="step-item-num">a</div><div class="step-item-content"><div class="step-item-title">Tambah Akun Guru</div><div class="step-item-desc">Klik <strong>+ Tambah User</strong>, isi nama lengkap, username, password, dan pilih role <strong>Guru</strong>. Setelah disimpan, akun langsung bisa digunakan untuk login dan mengisi soal di paket yang ditugaskan admin.</div></div></div>
+              <div class="step-item"><div class="step-item-num">b</div><div class="step-item-content"><div class="step-item-title">Tambah Akun Proktor &amp; Pengawas</div><div class="step-item-desc">Role <strong>Proktor</strong> dapat mengakses Monitor Ujian, Jadwal (view), dan Daftar Hadir. Role <strong>Pengawas</strong> hanya bisa melihat Monitor Ujian — cocok untuk pengawas ruang yang butuh pantau status siswa saja.</div></div></div>
+              <div class="step-item"><div class="step-item-num">c</div><div class="step-item-content"><div class="step-item-title">Ringkasan Hak Akses per Role</div><div class="step-item-desc">
+                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 14px;margin-top:6px;font-size:12px">
+                  <div style="display:grid;grid-template-columns:auto 1fr;gap:4px 12px;line-height:1.8">
+                    <strong>Admin</strong><span>Semua fitur — buat paket soal, assign guru, buat jadwal, kelola user, pengaturan</span>
+                    <strong>Guru</strong><span>Hanya isi butir soal di paket yang ditugaskan admin. Tidak bisa buat paket/jadwal sendiri</span>
+                    <strong>Proktor</strong><span>Monitor Ujian, Jadwal (view), Daftar Hadir</span>
+                    <strong>Pengawas</strong><span>Monitor Ujian saja</span>
+                  </div>
+                </div>
+              </div></div></div>
+              <div class="step-item"><div class="step-item-num">d</div><div class="step-item-content"><div class="step-item-title">Import Massal via Excel</div><div class="step-item-desc">Gunakan fitur <strong>Import Excel</strong> di halaman Manajemen User untuk menambah banyak akun guru/proktor sekaligus. Download template, isi kolom nama_admin, username, password, role, lalu upload.</div></div></div>
+            </div>
+            <div class="step-tip"><i class="fa-solid fa-lightbulb"></i><span>Setelah menambah guru dan membuat paket soal, jangan lupa assign guru ke paket melalui form <strong>Edit Paket Soal → Guru Penyusun Soal</strong>. Tanpa assignment ini guru tidak akan melihat paket soal apapun.</span></div>
           </div>
         </div>
       </div>
@@ -2286,6 +2314,197 @@ tr.ver-cat td{background:#f5f5f5;font-size:10px;font-weight:800;text-transform:u
   </footer>
 
 
+
+
+  <!-- TAB SETTING / GO ONLINE (Cloudflare Tunnel) -->
+  <div class="panduan-body" id="panduan-tab-setting" style="display:none">
+    <div class="jar-panduan-wrap" style="max-width:860px;margin:0 auto;padding:40px 24px 60px">
+
+      <!-- Header -->
+      <div style="text-align:center;margin-bottom:40px">
+        <div class="hero-badge" style="display:inline-flex;margin-bottom:14px"><span class="pulse"></span> Tutorial Online</div>
+        <h2 style="font-size:28px;font-weight:900;color:#0a0a0a;margin-bottom:10px">Akses Emes CBT dari Internet</h2>
+        <p style="font-size:14.5px;color:#737373;line-height:1.7;max-width:600px;margin:0 auto">Emes CBT berjalan di komputer lokal sekolah — tapi dengan <strong>Cloudflare Tunnel</strong>, semua pengguna (siswa, guru, proktor) bisa mengaksesnya dari mana saja melalui internet, tanpa konfigurasi router, tanpa IP publik, dan tanpa biaya.</p>
+      </div>
+
+      <!-- Callout kegunaan -->
+      <div style="background:#0a0a0a;border-radius:16px;padding:22px 28px;display:flex;gap:18px;align-items:flex-start;margin-bottom:36px">
+        <div style="font-size:30px;flex-shrink:0;line-height:1">☁️</div>
+        <div>
+          <div style="font-size:15px;font-weight:800;color:#fff;margin-bottom:6px">Kapan fitur ini berguna?</div>
+          <div style="font-size:13.5px;color:rgba(255,255,255,.65);line-height:1.75">
+            • Ujian <strong style="color:#fff">take-home</strong> atau berbasis rumah — siswa mengerjakan dari HP/laptop masing-masing<br>
+            • Guru mengisi soal dari <strong style="color:#fff">luar sekolah</strong> tanpa perlu hadir fisik<br>
+            • Admin memantau ujian dari <strong style="color:#fff">jarak jauh</strong> secara real-time<br>
+            • Sekolah belum punya router sendiri tapi server bisa diakses publik<br>
+            • Alternatif ujian saat siswa tidak bisa hadir ke sekolah
+          </div>
+        </div>
+      </div>
+
+      <!-- Prasyarat -->
+      <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:12px;padding:16px 20px;margin-bottom:32px;font-size:13.5px;color:#166534">
+        <div style="font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:8px"><i class="fa-solid fa-circle-check"></i> Yang dibutuhkan sebelum mulai</div>
+        <div style="display:flex;flex-direction:column;gap:5px">
+          <div><i class="fa-solid fa-check" style="width:16px"></i> Komputer server menyala dan Emes CBT sudah berjalan (<code style="background:#dcfce7;padding:1px 5px;border-radius:4px">Jalankan CBT.bat</code> sudah diklik)</div>
+          <div><i class="fa-solid fa-check" style="width:16px"></i> Koneksi internet di komputer server (WiFi atau kabel)</div>
+          <div><i class="fa-solid fa-check" style="width:16px"></i> Sistem operasi Windows 10 atau 11 (64-bit)</div>
+          <div><i class="fa-solid fa-check" style="width:16px"></i> Akun Cloudflare gratis (opsional — bisa langsung tanpa akun untuk tunnel sementara)</div>
+        </div>
+      </div>
+
+      <!-- METODE 1: Quick tunnel (tanpa akun) -->
+      <div style="margin-bottom:40px">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+          <div style="background:#0a0a0a;color:#fff;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;flex-shrink:0">A</div>
+          <div>
+            <div style="font-size:18px;font-weight:800;color:#0a0a0a">Metode Cepat — Quick Tunnel (Tanpa Akun, URL Sementara)</div>
+            <div style="font-size:12.5px;color:#737373">Cocok untuk ujian sekali pakai. URL berubah setiap tunnel dijalankan ulang.</div>
+          </div>
+        </div>
+
+        <div class="jar-steps">
+          <div class="jar-steps-title">Langkah-langkah</div>
+
+          <div class="jar-st"><div class="jar-st-num">1</div><div>
+            <strong>Download cloudflared.exe</strong><br>
+            Buka browser, kunjungi: <a href="https://github.com/cloudflare/cloudflared/releases/latest" target="_blank" style="color:#2563eb;font-weight:600">github.com/cloudflare/cloudflared/releases/latest</a><br>
+            Cari file <code>cloudflared-windows-amd64.exe</code>, klik untuk download. Simpan file di folder yang mudah diingat, misal: <code>C:\cloudflared\cloudflared.exe</code>
+          </div></div>
+
+          <div class="jar-st"><div class="jar-st-num">2</div><div>
+            <strong>Pastikan Emes CBT sudah berjalan</strong><br>
+            Double-klik <code>Jalankan CBT.bat</code> terlebih dahulu. Pastikan server sudah aktif di port <code>3000</code>.
+          </div></div>
+
+          <div class="jar-st"><div class="jar-st-num">3</div><div>
+            <strong>Buka Command Prompt (cmd)</strong><br>
+            Tekan <kbd style="background:#f1f5f9;padding:2px 7px;border-radius:4px;border:1px solid #cbd5e1;font-size:12px">Win + R</kbd>, ketik <code>cmd</code>, tekan Enter.
+          </div></div>
+
+          <div class="jar-st"><div class="jar-st-num">4</div><div>
+            <strong>Jalankan perintah tunnel</strong><br>
+            Ketik perintah berikut lalu tekan Enter:
+            <div class="cp-terminal" style="margin-top:10px">
+              <div class="cp-terminal-bar"><span></span><span></span><span></span></div>
+              <div class="cp-terminal-body">
+                <div class="cp-terminal-line"><span class="ct-dim">C:\&gt;</span> <span style="color:#86efac;font-weight:700">C:\cloudflared\cloudflared.exe tunnel --url http://localhost:3000</span></div>
+                <div class="cp-terminal-line" style="margin-top:8px"><span class="ct-dim">Menunggu...</span></div>
+                <div class="cp-terminal-line"><span class="ct-green">✔</span> <span class="ct-dim">Your quick Tunnel has been created!</span></div>
+                <div class="cp-terminal-line"><span class="ct-green">✔</span> <span class="ct-dim">Visit it at:</span> <span class="ct-url">https://random-words-xxxx.trycloudflare.com</span></div>
+              </div>
+            </div>
+          </div></div>
+
+          <div class="jar-st"><div class="jar-st-num">5</div><div>
+            <strong>Salin URL yang muncul</strong><br>
+            URL seperti <code>https://random-words-xxxx.trycloudflare.com</code> akan muncul di terminal. URL inilah yang dibagikan ke siswa atau guru — mereka bisa langsung buka di browser tanpa setting apapun.
+          </div></div>
+
+          <div class="jar-st"><div class="jar-st-num">6</div><div>
+            <strong>Bagikan URL ke pengguna</strong><br>
+            Salin URL tersebut, bagikan via WhatsApp, grup kelas, atau tampilkan di proyektor. Semua yang punya URL bisa langsung akses portal login Emes CBT dari HP atau laptop masing-masing.
+          </div></div>
+
+          <div class="jar-st" style="border-left-color:#dc2626"><div class="jar-st-num" style="background:#dc2626">!</div><div>
+            <strong>Untuk menghentikan tunnel</strong><br>
+            Tekan <kbd style="background:#f1f5f9;padding:2px 7px;border-radius:4px;border:1px solid #cbd5e1;font-size:12px">Ctrl + C</kbd> di jendela Command Prompt. URL langsung tidak aktif. Jalankan lagi jika diperlukan — URL akan berbeda setiap kali.
+          </div></div>
+        </div>
+        <div class="jar-warn"><i class="fa-solid fa-triangle-exclamation"></i> <strong>Perhatian:</strong> Quick Tunnel menghasilkan URL acak yang berubah setiap kali dijalankan. Jika server dimatikan dan dinyalakan ulang, URL berubah dan harus dibagikan ulang ke pengguna.</div>
+      </div>
+
+      <!-- METODE 2: Named tunnel (dengan akun Cloudflare) -->
+      <div style="margin-bottom:40px">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+          <div style="background:#2563eb;color:#fff;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;flex-shrink:0">B</div>
+          <div>
+            <div style="font-size:18px;font-weight:800;color:#0a0a0a">Metode Permanen — Named Tunnel + Domain Sendiri</div>
+            <div style="font-size:12.5px;color:#737373">URL tetap dan tidak berubah. Cocok untuk penggunaan rutin atau jika ingin domain sendiri.</div>
+          </div>
+        </div>
+
+        <div class="jar-steps">
+          <div class="jar-steps-title">Langkah-langkah</div>
+
+          <div class="jar-st"><div class="jar-st-num">1</div><div>
+            <strong>Buat akun Cloudflare gratis</strong><br>
+            Daftar di <a href="https://dash.cloudflare.com/sign-up" target="_blank" style="color:#2563eb;font-weight:600">dash.cloudflare.com</a>. Akun gratis sudah cukup untuk semua fitur tunnel yang dibutuhkan.
+          </div></div>
+
+          <div class="jar-st"><div class="jar-st-num">2</div><div>
+            <strong>Download dan pasang cloudflared.exe</strong><br>
+            Download dari <a href="https://github.com/cloudflare/cloudflared/releases/latest" target="_blank" style="color:#2563eb;font-weight:600">github.com/cloudflare/cloudflared/releases/latest</a> → ambil <code>cloudflared-windows-amd64.exe</code>. Simpan di <code>C:\cloudflared\cloudflared.exe</code>.
+          </div></div>
+
+          <div class="jar-st"><div class="jar-st-num">3</div><div>
+            <strong>Login ke Cloudflare dari cmd</strong><br>
+            Buka Command Prompt, jalankan:
+            <div class="cp-terminal" style="margin-top:10px">
+              <div class="cp-terminal-bar"><span></span><span></span><span></span></div>
+              <div class="cp-terminal-body">
+                <div class="cp-terminal-line"><span class="ct-dim">C:\&gt;</span> <span style="color:#86efac;font-weight:700">C:\cloudflared\cloudflared.exe login</span></div>
+                <div class="cp-terminal-line"><span class="ct-dim">Browser akan terbuka otomatis → login Cloudflare → pilih domain Anda → klik Authorize</span></div>
+              </div>
+            </div>
+          </div></div>
+
+          <div class="jar-st"><div class="jar-st-num">4</div><div>
+            <strong>Buat tunnel baru</strong>
+            <div class="cp-terminal" style="margin-top:10px">
+              <div class="cp-terminal-bar"><span></span><span></span><span></span></div>
+              <div class="cp-terminal-body">
+                <div class="cp-terminal-line"><span class="ct-dim">C:\&gt;</span> <span style="color:#86efac;font-weight:700">C:\cloudflared\cloudflared.exe tunnel create emes-cbt</span></div>
+                <div class="cp-terminal-line"><span class="ct-green">✔</span> <span class="ct-dim">Tunnel 'emes-cbt' dengan ID <span style="color:#fbbf24">xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</span> telah dibuat</span></div>
+              </div>
+            </div>
+          </div></div>
+
+          <div class="jar-st"><div class="jar-st-num">5</div><div>
+            <strong>Arahkan subdomain ke tunnel</strong><br>
+            Jalankan perintah di bawah — ganti <code>cbt.namadomainanda.com</code> dengan subdomain milik Anda:
+            <div class="cp-terminal" style="margin-top:10px">
+              <div class="cp-terminal-bar"><span></span><span></span><span></span></div>
+              <div class="cp-terminal-body">
+                <div class="cp-terminal-line"><span class="ct-dim">C:\&gt;</span> <span style="color:#86efac;font-weight:700">C:\cloudflared\cloudflared.exe tunnel route dns emes-cbt cbt.namadomainanda.com</span></div>
+              </div>
+            </div>
+          </div></div>
+
+          <div class="jar-st"><div class="jar-st-num">6</div><div>
+            <strong>Jalankan tunnel ke port 3000</strong>
+            <div class="cp-terminal" style="margin-top:10px">
+              <div class="cp-terminal-bar"><span></span><span></span><span></span></div>
+              <div class="cp-terminal-body">
+                <div class="cp-terminal-line"><span class="ct-dim">C:\&gt;</span> <span style="color:#86efac;font-weight:700">C:\cloudflared\cloudflared.exe tunnel run --url http://localhost:3000 emes-cbt</span></div>
+                <div class="cp-terminal-line"><span class="ct-green">✔</span> <span class="ct-dim">Tunnel running! Akses di:</span> <span class="ct-url">https://cbt.namadomainanda.com</span></div>
+              </div>
+            </div>
+          </div></div>
+
+          <div class="jar-st"><div class="jar-st-num">7</div><div>
+            <strong>Buka Emes CBT dari browser</strong><br>
+            Kunjungi <code>https://cbt.namadomainanda.com</code> dari HP, laptop, atau perangkat manapun yang punya koneksi internet — halaman login Emes CBT akan muncul.
+          </div></div>
+        </div>
+        <div class="jar-tip"><i class="fa-solid fa-lightbulb"></i> <strong>Tips:</strong> Agar tunnel otomatis aktif saat Windows menyala, jalankan <code>cloudflared.exe service install</code> dari Command Prompt (Run as Administrator). Tunnel akan berjalan di background tanpa perlu buka cmd setiap kali komputer dinyalakan.</div>
+      </div>
+
+      <!-- FAQ Tunnel -->
+      <div style="background:#fafafa;border:1.5px solid #e5e5e5;border-radius:16px;padding:24px 28px;margin-bottom:20px">
+        <div style="font-size:16px;font-weight:800;color:#0a0a0a;margin-bottom:16px"><i class="fa-solid fa-circle-question" style="color:#737373;margin-right:8px"></i>Pertanyaan Umum</div>
+        <div style="display:flex;flex-direction:column;gap:14px;font-size:13.5px">
+          <div><div style="font-weight:700;color:#0a0a0a;margin-bottom:3px">Apakah Cloudflare Tunnel gratis?</div><div style="color:#737373">Ya, sepenuhnya gratis untuk penggunaan seperti ini. Tidak ada biaya apapun dari Cloudflare untuk tunnel ke aplikasi lokal.</div></div>
+          <div><div style="font-weight:700;color:#0a0a0a;margin-bottom:3px">Apakah data siswa aman melewati Cloudflare?</div><div style="color:#737373">Lalu lintas dienkripsi HTTPS dari ujung ke ujung. Cloudflare berperan sebagai proxy — data Anda tetap tersimpan di komputer server lokal sekolah, tidak di cloud Cloudflare.</div></div>
+          <div><div style="font-weight:700;color:#0a0a0a;margin-bottom:3px">Kecepatan internet server seberapa yang dibutuhkan?</div><div style="color:#737373">Minimal <strong>5 Mbps upload</strong> untuk 30–50 pengguna serentak. Semakin banyak pengguna bersamaan, semakin besar bandwidth yang dibutuhkan. Rekomendasi: 10–20 Mbps upload untuk 100+ pengguna.</div></div>
+          <div><div style="font-weight:700;color:#0a0a0a;margin-bottom:3px">Apakah bisa digunakan bersamaan dengan jaringan LAN sekolah?</div><div style="color:#737373">Ya. Emes CBT tetap bisa diakses via LAN (IP lokal) dan via internet (URL Cloudflare) secara bersamaan — siswa di lab komputer pakai LAN, siswa di rumah pakai internet.</div></div>
+          <div><div style="font-weight:700;color:#0a0a0a;margin-bottom:3px">Server harus menyala terus?</div><div style="color:#737373">Ya, selama ujian online berlangsung komputer server dan tunnel harus aktif. Matikan server seperti biasa dengan <code>Matikan Server.bat</code> setelah ujian selesai.</div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
 </div><!-- end page-panduan -->
 
 <script>
@@ -2372,7 +2591,7 @@ function scrollToStep(n) {
 }
 
 function highlightStepNav() {
-  const steps = [1,2,3,4,5,6,7];
+  const steps = [1,2,3,4,5,6,7,8];
   for (let i = steps.length - 1; i >= 0; i--) {
     const el = document.getElementById('step-' + steps[i]);
     if (el && el.getBoundingClientRect().top <= 120) {
@@ -2389,11 +2608,13 @@ function switchPanduanTab(tab) {
   document.getElementById('panduan-tab-admin').style.display    = tab === 'admin'    ? '' : 'none';
   document.getElementById('panduan-tab-siswa').style.display    = tab === 'siswa'    ? '' : 'none';
   document.getElementById('panduan-tab-jaringan').style.display = tab === 'jaringan' ? '' : 'none';
+  document.getElementById('panduan-tab-setting').style.display  = tab === 'setting'  ? '' : 'none';
   document.querySelectorAll('.panduan-tab').forEach((btn, i) => {
     btn.classList.toggle('active',
       (tab === 'admin'    && i === 0) ||
       (tab === 'siswa'    && i === 1) ||
-      (tab === 'jaringan' && i === 2)
+      (tab === 'jaringan' && i === 2) ||
+      (tab === 'setting'  && i === 3)
     );
   });
 }
