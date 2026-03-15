@@ -2849,12 +2849,21 @@ document.addEventListener('click', function(e) {
         </div>
         <div class="wa-field">
           <label>Masa Lisensi <span style="color:#ef4444">*</span></label>
-          <select id="wa-masa">
-            <option value="">— Pilih —</option>
-            <option value="Semester">Semester</option>
-            <option value="Tahunan">Tahunan</option>
-            <option value="Permanen">Permanen</option>
-          </select>
+          <input type="hidden" id="wa-masa" value="">
+          <div class="wa-versi-group" style="grid-template-columns:repeat(3,1fr)">
+            <label class="wa-versi-btn" onclick="selectMasa(this,'Semester')">
+              <span class="vb-name">Semester</span>
+              <span class="vb-desc">~6 bulan</span>
+            </label>
+            <label class="wa-versi-btn" onclick="selectMasa(this,'Tahunan')">
+              <span class="vb-name">Tahunan</span>
+              <span class="vb-desc">~12 bulan</span>
+            </label>
+            <label class="wa-versi-btn" onclick="selectMasa(this,'Permanen')">
+              <span class="vb-name">Permanen</span>
+              <span class="vb-desc">Selamanya</span>
+            </label>
+          </div>
         </div>
       </div>
 
@@ -2873,6 +2882,12 @@ function selectVersi(el, val) {
   el.classList.add('selected');
   document.getElementById('wa-versi').value = val;
   document.getElementById('wa-versi').style.borderColor = '';
+}
+function selectMasa(btn, val) {
+  btn.closest('.wa-versi-group').querySelectorAll('.wa-versi-btn').forEach(function(b){ b.classList.remove('selected'); });
+  btn.classList.add('selected');
+  document.getElementById('wa-masa').value = val;
+  document.getElementById('wa-masa').style.borderColor = '';
 }
 </script>
 
