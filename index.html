@@ -961,9 +961,7 @@ footer{background:#fff;border-top:1px solid #e5e5e5;padding:40px 40px 28px;color
             <li><i class="fa-solid fa-check" style="color:#0a0a0a"></i> Maks 7× buka aplikasi</li>
             <li><i class="fa-solid fa-check" style="color:#0a0a0a"></i> Data di server sekolah (SQLite)</li>
           </ul>
-          <button class="price-btn-wa" onclick="openWAModal('TRIAL')">
-            <i class="fa-brands fa-whatsapp"></i> Minta Lisensi Trial
-          </button>
+          
         </div>
       </div>
       <div class="price-info reveal" style="margin-top:20px">
@@ -1006,7 +1004,7 @@ footer{background:#fff;border-top:1px solid #e5e5e5;padding:40px 40px 28px;color
             <li><i class="fa-solid fa-check"></i> Lebih hemat dari 2× Semester</li>
           </ul>
           <button class="price-btn-wa" onclick="openWAModal('STANDAR')">
-            <i class="fa-brands fa-whatsapp"></i> Pesan Sekarang
+            <i class="fa-brands fa-whatsapp"></i> Minta Lisensi
           </button>
         </div>
         <div class="price-card lifetime">
@@ -1022,7 +1020,7 @@ footer{background:#fff;border-top:1px solid #e5e5e5;padding:40px 40px 28px;color
             <li><i class="fa-solid fa-check"></i> ROI terbaik jangka panjang</li>
           </ul>
           <button class="price-btn-wa" onclick="openWAModal('STANDAR')">
-            <i class="fa-brands fa-whatsapp"></i> Pesan Sekarang
+            <i class="fa-brands fa-whatsapp"></i> Minta Lisensi
           </button>
         </div>
       </div>
@@ -1047,7 +1045,7 @@ footer{background:#fff;border-top:1px solid #e5e5e5;padding:40px 40px 28px;color
             <li><i class="fa-solid fa-check"></i> Update selama aktif</li>
           </ul>
           <button class="price-btn-wa" onclick="openWAModal('PRO')">
-            <i class="fa-brands fa-whatsapp"></i> Pesan Sekarang
+            <i class="fa-brands fa-whatsapp"></i> Minta Lisensi
           </button>
         </div>
         <div class="price-card popular">
@@ -1064,7 +1062,7 @@ footer{background:#fff;border-top:1px solid #e5e5e5;padding:40px 40px 28px;color
             <li><i class="fa-solid fa-check"></i> Lebih hemat dari 2× Semester</li>
           </ul>
           <button class="price-btn-wa" onclick="openWAModal('PRO')">
-            <i class="fa-brands fa-whatsapp"></i> Pesan Sekarang
+            <i class="fa-brands fa-whatsapp"></i> Minta Lisensi
           </button>
         </div>
         <div class="price-card lifetime">
@@ -1079,7 +1077,7 @@ footer{background:#fff;border-top:1px solid #e5e5e5;padding:40px 40px 28px;color
             <li><i class="fa-solid fa-check"></i> ROI terbaik untuk sekolah besar</li>
           </ul>
           <button class="price-btn-wa" onclick="openWAModal('PRO')">
-            <i class="fa-brands fa-whatsapp"></i> Pesan Sekarang
+            <i class="fa-brands fa-whatsapp"></i> Minta Lisensi
           </button>
         </div>
       </div>
@@ -2699,6 +2697,8 @@ function sendWA() {
   const kota     = document.getElementById('wa-kota').value.trim();
   const provinsi = document.getElementById('wa-provinsi').value.trim();
   const versi    = document.getElementById('wa-versi').value;
+  const masa     = document.getElementById('wa-masa').value;
+  const isTrial  = versi === 'TRIAL';
 
   const fields = [
     { el: document.getElementById('wa-npsn'),     val: npsn,     label: 'NPSN' },
@@ -2708,6 +2708,7 @@ function sendWA() {
     { el: document.getElementById('wa-provinsi'), val: provinsi, label: 'Provinsi' },
     { el: document.getElementById('wa-versi'),    val: versi,    label: 'Versi' },
   ];
+  if (!isTrial) fields.push({ el: document.getElementById('wa-masa'), val: masa, label: 'Masa Lisensi' });
 
   let valid = true;
   fields.forEach(f => {
@@ -2720,19 +2721,9 @@ function sendWA() {
   }
   document.getElementById('wa-error').style.display = 'none';
 
-  const versiLabel = { 'TRIAL': 'TRIAL (Coba Gratis)', 'STANDAR': 'Standar', 'PRO': 'Pro' }[versi] || versi;
-  const msg = `Halo, saya ingin mendapatkan aplikasi *Emes CBT* 🎓
-
-📋 *Data Sekolah:*
-• NPSN        : ${npsn}
-• Nama Sekolah: ${sekolah}
-• Jenjang     : ${jenjang}
-• Kab/Kota    : ${kota}
-• Provinsi    : ${provinsi}
-
-📦 *Versi yang diminati:* ${versiLabel}
-
-Mohon informasi lebih lanjut. Terima kasih!`;
+  const versiLabel = { 'STANDAR': 'Standar', 'PRO': 'Pro' }[versi] || versi;
+  const lisensiBlock = isTrial ? '' : `\n\n📦 *Jenis Lisensi:*\n• Lisensi: ${versiLabel}\n• Masa   : ${masa}`;
+  const msg = `Halo, saya ingin mendapatkan aplikasi *Emes CBT* 🎓\n\n📋 *Data Sekolah:*\n• NPSN        : ${npsn}\n• Nama Sekolah: ${sekolah}\n• Jenjang     : ${jenjang}\n• Kab/Kota    : ${kota}\n• Provinsi    : ${provinsi}${lisensiBlock}\n\nMohon informasi lebih lanjut. Terima kasih!`;
 
   const encoded = encodeURIComponent(msg);
   // Ambil nomor WA reseller — sudah di-set oleh module Firestore
@@ -2849,6 +2840,16 @@ document.addEventListener('click', function(e) {
             <span class="vb-desc">PostgreSQL — 500+ siswa</span>
           </label>
         </div>
+      </div>
+
+      <div class="wa-field" id="wa-masa-wrap" style="display:none">
+        <label>Masa Lisensi <span style="color:#ef4444">*</span></label>
+        <select id="wa-masa">
+          <option value="">— Pilih —</option>
+          <option value="Semester">Semester</option>
+          <option value="Tahunan">Tahunan</option>
+          <option value="Permanen">Permanen</option>
+        </select>
       </div>
 
       <button class="wa-submit" onclick="sendWA()">
