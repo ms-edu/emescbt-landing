@@ -60,6 +60,7 @@
     window._resellerWA    = data.wa;
     window._resellerNama  = data.nama;
     window._resellerLabel = data.label;
+    window._resellerCode  = data.code || '';
     document.querySelectorAll('[data-reseller-nama]').forEach(function(el){ el.textContent = data.nama; });
     document.querySelectorAll('[data-reseller-label]').forEach(function(el){ el.textContent = data.label; });
     if (isReseller) {
@@ -81,6 +82,7 @@
   }
 
   var ref = (new URLSearchParams(window.location.search).get('ref') || '').toLowerCase().trim();
+  window._resellerCode = '';
 
   if (!ref) {
     // Tidak ada reseller, terapkan default saat DOM siap
@@ -90,13 +92,14 @@
       var found = null;
       snap.forEach(function(doc) {
         var d = doc.data();
-        if ((d.code || '').toLowerCase() === ref) found = { nama:d.nama, wa:d.wa, label:d.label };
+        if ((d.code || '').toLowerCase() === ref) found = { nama:d.nama, wa:d.wa, label:d.label, code:d.code };
       });
       var data = found || DEFAULT;
       // Terapkan ke window dulu (untuk sendWA)
       window._resellerWA    = data.wa;
       window._resellerNama  = data.nama;
       window._resellerLabel = data.label;
+      window._resellerCode  = found ? (found.code || ref) : '';
       // Terapkan ke DOM setelah siap
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function(){ applyToDOM(data, !!found); });
@@ -3107,7 +3110,8 @@ async function submitSchoolData() {
       sekolah: vals['dl-sekolah'], jenjang: vals['dl-jenjang'],
       kota: vals['dl-kota'], provinsi: vals['dl-provinsi'],
       downloadedAt: firebase.firestore.FieldValue.serverTimestamp(),
-      ref: window._resellerNama || 'direct'
+      ref: window._resellerNama || 'direct',
+      reseller_code: window._resellerCode || 'direct'
     }, { merge: true });
     setDlSession(_dlUser.uid);
   } catch(err) {
