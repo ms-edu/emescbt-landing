@@ -145,6 +145,10 @@ td.td-sekolah span{font-size:11.5px;color:#737373}
         <div class="tbl-actions">
           <input type="text" class="search-input" id="searchInput"
             placeholder="Cari nama / sekolah / kota…" oninput="filterTable()">
+          <select id="filterReseller" onchange="filterTable()" style="padding:8px 10px;border:1.5px solid #e5e5e5;border-radius:9px;font-size:12.5px;font-family:'DM Sans',sans-serif;outline:none;background:#fff;color:#0a0a0a;cursor:pointer">
+            <option value="">Semua Reseller</option>
+            <option value="direct">Direct</option>
+          </select>
           <button class="refresh-btn" onclick="loadData()">
             <i class="fa-solid fa-rotate-right" id="refreshIcon"></i> Refresh
           </button>
@@ -162,10 +166,10 @@ td.td-sekolah span{font-size:11.5px;color:#737373}
               <th>Sekolah</th>
               <th>NPSN</th>
               <th>Jenjang</th>
+              <th>Reseller</th>
               <th>Kab/Kota</th>
               <th>Provinsi</th>
               <th>WhatsApp</th>
-              <th>Reseller</th>
               <th>Tanggal</th>
             </tr>
           </thead>
@@ -217,6 +221,14 @@ async function loadData() {
     const snap = await db.collection('downloads').orderBy('downloadedAt', 'desc').get();
     allData = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     updateStats();
+    // Populate reseller filter
+    const resCodes = [...new Set(allData.map(d=>d.reseller_code).filter(c=>c&&c!=='direct'))];
+    const sel = document.getElementById('filterReseller');
+    sel.innerHTML = '<option value="">Semua Reseller</option><option value="direct">Direct</option>' +
+      resCodes.map(c => {
+        const nama = allData.find(d=>d.reseller_code===c)?.ref || c;
+        return `<option value="${c}">${nama} (${c})</option>`;
+      }).join('');
     filterTable();
   } catch(err) {
     document.getElementById('dataTableBody').innerHTML =
@@ -251,15 +263,18 @@ function updateStats() {
 }
 
 function filterTable() {
-  const q = (document.getElementById('searchInput').value || '').toLowerCase();
-  filtered = q ? allData.filter(d =>
-    (d.nama||'').toLowerCase().includes(q) ||
-    (d.sekolah||'').toLowerCase().includes(q) ||
-    (d.kota||'').toLowerCase().includes(q) ||
-    (d.provinsi||'').toLowerCase().includes(q) ||
-    (d.npsn||'').includes(q) ||
-    (d.email||'').toLowerCase().includes(q)
-  ) : [...allData];
+  const q   = (document.getElementById('searchInput').value || '').toLowerCase();
+  const res = document.getElementById('filterReseller').value;
+  filtered = allData.filter(d => {
+    const matchQ = !q || (d.nama||'').toLowerCase().includes(q) ||
+      (d.sekolah||'').toLowerCase().includes(q) || (d.kota||'').toLowerCase().includes(q) ||
+      (d.provinsi||'').toLowerCase().includes(q) || (d.npsn||'').includes(q) ||
+      (d.email||'').toLowerCase().includes(q) || (d.ref||'').toLowerCase().includes(q);
+    const matchRes = !res || (res==='direct'
+      ? (!d.reseller_code || d.reseller_code==='direct')
+      : d.reseller_code===res);
+    return matchQ && matchRes;
+  });
   currentPage = 1;
   renderTable();
 }
@@ -294,15 +309,15 @@ function renderTable() {
       <td class="td-sekolah"><strong>${esc(d.sekolah||'—')}</strong></td>
       <td><span class="npsn-badge">${esc(d.npsn||'—')}</span></td>
       <td><span class="jenjang-badge">${esc(d.jenjang||'—')}</span></td>
+      <td style="font-size:12.5px">${(!d.reseller_code || d.reseller_code === 'direct')
+        ? '<span style="color:#a3a3a3;font-size:12px">Direct</span>'
+        : `<span style="font-weight:700;color:#0a0a0a">${esc(d.ref||d.reseller_code||'')}</span><br><span style="font-size:11px;color:#a3a3a3;font-family:monospace">${esc(d.reseller_code)}</span>`
+      }</td>
       <td>${esc(d.kota||'—')}</td>
       <td>${esc(d.provinsi||'—')}</td>
       <td class="td-wa"><a href="https://wa.me/${waClean}" target="_blank">
         <i class="fa-brands fa-whatsapp"></i>${esc(d.wa||'—')}
       </a></td>
-      <td style="font-size:12.5px">${d.reseller_code && d.reseller_code !== 'direct'
-        ? `<span style="font-weight:700;color:#0a0a0a">${esc(d.ref||'')}</span><br><span style="font-size:11px;color:#a3a3a3;font-family:monospace">${esc(d.reseller_code)}</span>`
-        : '<span style="color:#a3a3a3;font-size:12px">Direct</span>'
-      }</td>
       <td class="td-date">${dateStr}</td>
     </tr>`;
   }).join('');
