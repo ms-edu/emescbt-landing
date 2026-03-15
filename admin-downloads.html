@@ -165,12 +165,13 @@ td.td-sekolah span{font-size:11.5px;color:#737373}
               <th>Kab/Kota</th>
               <th>Provinsi</th>
               <th>WhatsApp</th>
+              <th>Reseller</th>
               <th>Tanggal</th>
             </tr>
           </thead>
           <tbody id="dataTableBody">
             <tr class="loading-row">
-              <td colspan="9"><i class="fa-solid fa-spinner fa-spin"></i> Memuat data…</td>
+              <td colspan="10"><i class="fa-solid fa-spinner fa-spin"></i> Memuat data…</td>
             </tr>
           </tbody>
         </table>
@@ -298,6 +299,10 @@ function renderTable() {
       <td class="td-wa"><a href="https://wa.me/${waClean}" target="_blank">
         <i class="fa-brands fa-whatsapp"></i>${esc(d.wa||'—')}
       </a></td>
+      <td style="font-size:12.5px">${d.reseller_code && d.reseller_code !== 'direct'
+        ? `<span style="font-weight:700;color:#0a0a0a">${esc(d.ref||'')}</span><br><span style="font-size:11px;color:#a3a3a3;font-family:monospace">${esc(d.reseller_code)}</span>`
+        : '<span style="color:#a3a3a3;font-size:12px">Direct</span>'
+      }</td>
       <td class="td-date">${dateStr}</td>
     </tr>`;
   }).join('');
@@ -327,13 +332,13 @@ function esc(s) {
    EXPORT CSV
 ════════════════════════════════════════════════ */
 function exportCSV() {
-  const headers = ['No','Nama PIC','Email','Sekolah','NPSN','Jenjang','Kab/Kota','Provinsi','WhatsApp','Tanggal Download'];
+  const headers = ['No','Nama PIC','Email','Sekolah','NPSN','Jenjang','Kab/Kota','Provinsi','WhatsApp','Reseller','Kode Reseller','Tanggal Download'];
   const rows = filtered.map((d, i) => {
     const dt = d.downloadedAt
       ? (d.downloadedAt.toDate ? d.downloadedAt.toDate() : new Date(d.downloadedAt))
       : null;
     return [i+1, d.nama||'', d.email||'', d.sekolah||'', d.npsn||'', d.jenjang||'',
-            d.kota||'', d.provinsi||'', d.wa||'', dt ? dt.toLocaleString('id-ID') : '']
+            d.kota||'', d.provinsi||'', d.wa||'', d.ref||'direct', d.reseller_code||'direct', dt ? dt.toLocaleString('id-ID') : '']
       .map(v => `"${String(v).replace(/"/g,'""')}"`)
       .join(',');
   });
