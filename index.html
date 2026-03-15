@@ -2689,7 +2689,7 @@ function openWAModal(versiDefault) {
     document.querySelectorAll('.wa-versi-btn').forEach(function(btn) {
       btn.classList.remove('selected');
     });
-    var map = { 'STANDAR': 1, 'PRO': 2, 'TRIAL': 0 };
+    var map = { 'STANDAR': 0, 'PRO': 1 };
     var idx = map[versiDefault];
     var btns = document.querySelectorAll('.wa-versi-btn');
     if (btns[idx]) {
@@ -2710,8 +2710,6 @@ function sendWA() {
   const provinsi = document.getElementById('wa-provinsi').value.trim();
   const versi    = document.getElementById('wa-versi').value;
   const masa     = document.getElementById('wa-masa').value;
-  const isTrial  = versi === 'TRIAL';
-
   const fields = [
     { el: document.getElementById('wa-npsn'),     val: npsn,     label: 'NPSN' },
     { el: document.getElementById('wa-sekolah'),  val: sekolah,  label: 'Nama Sekolah' },
@@ -2719,8 +2717,8 @@ function sendWA() {
     { el: document.getElementById('wa-kota'),     val: kota,     label: 'Kab/Kota' },
     { el: document.getElementById('wa-provinsi'), val: provinsi, label: 'Provinsi' },
     { el: document.getElementById('wa-versi'),    val: versi,    label: 'Versi' },
+    { el: document.getElementById('wa-masa'),     val: masa,     label: 'Masa Lisensi' },
   ];
-  if (!isTrial) fields.push({ el: document.getElementById('wa-masa'), val: masa, label: 'Masa Lisensi' });
 
   let valid = true;
   fields.forEach(f => {
@@ -2734,8 +2732,7 @@ function sendWA() {
   document.getElementById('wa-error').style.display = 'none';
 
   const versiLabel = { 'STANDAR': 'Standar', 'PRO': 'Pro' }[versi] || versi;
-  const lisensiBlock = isTrial ? '' : `\n\n📦 *Jenis Lisensi:*\n• Lisensi: ${versiLabel}\n• Masa   : ${masa}`;
-  const msg = `Halo, saya ingin mendapatkan aplikasi *Emes CBT* 🎓\n\n📋 *Data Sekolah:*\n• NPSN        : ${npsn}\n• Nama Sekolah: ${sekolah}\n• Jenjang     : ${jenjang}\n• Kab/Kota    : ${kota}\n• Provinsi    : ${provinsi}${lisensiBlock}\n\nMohon informasi lebih lanjut. Terima kasih!`;
+  const msg = `Halo, saya ingin mendapatkan aplikasi *Emes CBT* 🎓\n\n📋 *Data Sekolah:*\n• NPSN        : ${npsn}\n• Nama Sekolah: ${sekolah}\n• Jenjang     : ${jenjang}\n• Kab/Kota    : ${kota}\n• Provinsi    : ${provinsi}\n\n📦 *Jenis Lisensi:*\n• Lisensi: ${versiLabel}\n• Masa   : ${masa}\n\nMohon informasi lebih lanjut. Terima kasih!`;
 
   const encoded = encodeURIComponent(msg);
   // Ambil nomor WA reseller — sudah di-set oleh module Firestore
@@ -2835,33 +2832,30 @@ document.addEventListener('click', function(e) {
         </div>
       </div>
 
-      <div class="wa-field">
-        <label>Versi yang Diminati <span style="color:#ef4444">*</span></label>
-        <input type="hidden" id="wa-versi" value="">
-        <div class="wa-versi-group">
-          <label class="wa-versi-btn" onclick="selectVersi(this,'TRIAL')">
-            <span class="vb-name">🎁 Trial</span>
-            <span class="vb-desc">Coba gratis dulu</span>
-          </label>
-          <label class="wa-versi-btn" onclick="selectVersi(this,'STANDAR')">
-            <span class="vb-name">✦ Standar</span>
-            <span class="vb-desc">SQLite — s/d 200 siswa</span>
-          </label>
-          <label class="wa-versi-btn" onclick="selectVersi(this,'PRO')">
-            <span class="vb-name">★ Pro</span>
-            <span class="vb-desc">PostgreSQL — 500+ siswa</span>
-          </label>
+      <div class="wa-field-row">
+        <div class="wa-field">
+          <label>Versi Lisensi <span style="color:#ef4444">*</span></label>
+          <input type="hidden" id="wa-versi" value="">
+          <div class="wa-versi-group" style="grid-template-columns:1fr 1fr">
+            <label class="wa-versi-btn" onclick="selectVersi(this,'STANDAR')">
+              <span class="vb-name">✦ Standar</span>
+              <span class="vb-desc">SQLite — s/d 200 siswa</span>
+            </label>
+            <label class="wa-versi-btn" onclick="selectVersi(this,'PRO')">
+              <span class="vb-name">★ Pro</span>
+              <span class="vb-desc">PostgreSQL — 500+ siswa</span>
+            </label>
+          </div>
         </div>
-      </div>
-
-      <div class="wa-field" id="wa-masa-wrap" style="display:none">
-        <label>Masa Lisensi <span style="color:#ef4444">*</span></label>
-        <select id="wa-masa">
-          <option value="">— Pilih —</option>
-          <option value="Semester">Semester</option>
-          <option value="Tahunan">Tahunan</option>
-          <option value="Permanen">Permanen</option>
-        </select>
+        <div class="wa-field">
+          <label>Masa Lisensi <span style="color:#ef4444">*</span></label>
+          <select id="wa-masa">
+            <option value="">— Pilih —</option>
+            <option value="Semester">Semester</option>
+            <option value="Tahunan">Tahunan</option>
+            <option value="Permanen">Permanen</option>
+          </select>
+        </div>
       </div>
 
       <button class="wa-submit" onclick="sendWA()">
