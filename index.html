@@ -529,21 +529,21 @@ footer{background:#fff;border-top:1px solid #e5e5e5;padding:40px 40px 28px;color
     <a onclick="showPage('panduan')" id="nav-panduan">Panduan</a>
     <a onclick="openWAModal()" class="nav-cta nav-cta-wa"><i class="fa-brands fa-whatsapp" style="margin-right:5px"></i>Hubungi Kami</a>
     <a onclick="openDownload(event)" href="#" class="nav-cta"><i class="fa-solid fa-download" style="margin-right:5px"></i>Download Aplikasi</a>
-  </div>
-  <div style="position:relative">
-    <button id="reseller-btn" onclick="toggleResellerDropdown(event)" title="Info Reseller">
-      <i class="fa-solid fa-user"></i>
-      <span class="rb-pulse"></span>
-    </button>
-    <div id="reseller-dropdown">
-      <div class="rd-team-label">Team Anda</div>
-      <div class="rd-team-name" id="rd-nama">—</div>
-      <button class="rd-btn wa" onclick="openWAModal();closeResellerDropdown()">
-        <i class="fa-brands fa-whatsapp"></i> Dapatkan Lisensi
+    <div style="position:relative">
+      <button id="reseller-btn" onclick="toggleResellerDropdown(event)" title="Info Reseller">
+        <i class="fa-solid fa-user"></i>
+        <span class="rb-pulse"></span>
       </button>
-      <button class="rd-btn dl" onclick="openDownload(event);closeResellerDropdown()">
-        <i class="fa-solid fa-download"></i> Download Aplikasi
-      </button>
+      <div id="reseller-dropdown">
+        <div class="rd-team-label">Team Anda</div>
+        <div class="rd-team-name" id="rd-nama">—</div>
+        <button class="rd-btn wa" onclick="openWAModal();closeResellerDropdown()">
+          <i class="fa-brands fa-whatsapp"></i> Dapatkan Lisensi
+        </button>
+        <button class="rd-btn dl" onclick="openDownload(event);closeResellerDropdown()">
+          <i class="fa-solid fa-download"></i> Download Aplikasi
+        </button>
+      </div>
     </div>
   </div>
 </nav>
